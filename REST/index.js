@@ -9,12 +9,12 @@ app.set("views",path.join(__dirname,"/views"));
 const { faker } = require('@faker-js/faker'); // to generate random data
 
 createRandomUser= ()=>{
-    return {
-      id: faker.string.uuid(),
-      username: faker.internet.userName(),
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-    };
+    return [
+      faker.string.uuid(),
+      faker.internet.userName(),
+      faker.internet.email(),
+      faker.internet.password(),
+    ];
 }
 
 const mysql=require("mysql2");  // to build connection with database .
@@ -26,21 +26,28 @@ const connection = mysql.createConnection({
     password: 'Nischay1'
   });
 
-console.log(createRandomUser());
+
+  let user=[];
+
+  for(let i=1;i<=100;i++){
+
+    user.push(createRandomUser());
+  }
+
+  let q="INSERT INTO users (id, name, email, password) VALUES ?";
 
 try{
 
-    connection.query("show tables",(err,result)=>{
+    connection.query(q,[user],(err,result)=>{
 
-        if(err)
-            throw err;
+        if(err) throw err;
     
         console.log(result);
     });
     
-}catch(er){
+}catch(err){
 
-    console.log("Error occured !! : "+er);
+    console.log("Error occured !! : "+err);
 }
 
 
