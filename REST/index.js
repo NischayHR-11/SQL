@@ -3,8 +3,8 @@ const app =express();
 const port=8080;
 const path=require("path");
 
-app.set("view engine","views");
-app.set("views",path.join(__dirname,"/views"));
+app.set("view engine","ejs");
+app.set("views",path.join(__dirname,"views"));
 
 const { faker } = require('@faker-js/faker'); // to generate random data
 
@@ -29,13 +29,16 @@ const connection = mysql.createConnection({
 
   let user=[];
 
-  for(let i=1;i<=100;i++){
+    for(let i=1;i<=100;i++){
 
-    user.push(createRandomUser());
-  }
+        user.push(createRandomUser());
+    }
 
+  let usercout=0;
   let q="INSERT INTO users (id, name, email, password) VALUES ?";
+  let count ="select count(*) from users";
 
+  
 try{
 
     connection.query(q,[user],(err,result)=>{
@@ -51,8 +54,28 @@ try{
 }
 
 
+try{
+
+    connection.query(count,(err,result)=>{
+
+        if(err) throw err;
+    
+        usercount=result[0]["count(*)"];
+    });
+    
+}catch(err){
+
+    console.log("Error occured !! : "+err);
+}
+
+
 app.listen(port,(req,res)=>{
 
     console.log("Listening To Port 8080..");
+});
+
+app.get("/",(req,res)=>{
+
+  res.render("home.ejs",{usercount})
 });
 
