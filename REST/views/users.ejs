@@ -29,6 +29,11 @@
                 <td><%=user.id%></td>
                 <td><%=user.name%></td>
                 <td><%=user.email%></td>
+                <td>
+                    <form method="get" action="/user/<%=user.id%>/edit">
+                        <button>EDIT</button>
+                    </form>
+                </td>
             </tr>
 
         <% } %>
