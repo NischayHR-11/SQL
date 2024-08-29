@@ -97,3 +97,26 @@ app.get("/users",(req,res)=>{
     }
 });
 
+
+app.get("/user/:id/edit",(req,res)=>{
+
+    let {id}=req.params;
+
+    let q=`select * from users where id='${id}'`;
+
+    try{
+
+        connection.query(q,(err,id)=>{
+
+            if(err) throw err;
+            
+            let user=id[0];
+            res.render("edit.ejs",{user});
+        })
+
+    }catch( err){
+
+    console.log("ERROR is : "+err);
+        
+    }
+})
