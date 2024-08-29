@@ -24,7 +24,11 @@ const connection = mysql.createConnection({
     user: 'root',
     database: 'project1',
     password: 'Nischay1'
-  });
+});
+
+app.use(express.urlencoded({extended:true})); // to accept url data.
+const method= require("method-override"); // for method override { forms post request can be converted to patch }
+app.use(method('_method'));
 
 
   let user=[];
@@ -36,7 +40,6 @@ const connection = mysql.createConnection({
 
   let usercout=0;
   let q="INSERT INTO users (id, name, email, password) VALUES ?";
-  let count ="select count(*) from users";
   let users="select * from users";
 
   
@@ -55,20 +58,6 @@ try{
 }
 
 
-try{
-
-    connection.query(count,(err,result)=>{
-
-        if(err) throw err;
-    
-        usercount=result[0]["count(*)"];
-    });
-    
-}catch(err){
-
-    console.log("Error occured !! : "+err);
-}
-
 
 app.listen(port,(req,res)=>{
 
@@ -77,7 +66,23 @@ app.listen(port,(req,res)=>{
 
 app.get("/",(req,res)=>{
 
-  res.render("home.ejs",{usercount})
+    let count ="select count(*) from users";
+
+    try{
+
+        connection.query(count,(err,result)=>{
+    
+            if(err) throw err;
+        
+            usercount=result[0]["count(*)"];
+        });
+        
+    }catch(err){
+    
+        console.log("Error occured !! : "+err);
+    }
+    
+    res.render("home.ejs",{usercount});
 });
 
 app.get("/users",(req,res)=>{
@@ -119,4 +124,52 @@ app.get("/user/:id/edit",(req,res)=>{
     console.log("ERROR is : "+err);
         
     }
-})
+});
+
+app.patch("/user/:id",(req,res)=>{
+
+    let {id}=req.params;
+
+    let q=`select * from users where id='${id}'`;
+    let{ password , name}= req.body;
+
+    try{
+
+        connection.query(q,(err,id)=>{
+
+            if(err) throw err;
+            
+            let user=id[0];
+
+            if(password==user.password){
+
+                let qi=`UPDATE users SET name='${name}' WHERE id='${user.id}'`;
+
+                try{
+
+                    connection.query(qi,(err,result)=>{
+            
+                        if(err) throw err;
+                        
+                        res.redirect("/users");
+                    })
+            
+                }catch( err){
+            
+                console.log("ERROR is : "+err);
+                    
+                }
+
+            }else{
+
+                res.send("<h1> INCORRECT PASSWORD !! <h1>");
+            }
+        })
+
+    }catch( err){
+
+    console.log("ERROR is : "+err);
+        
+    }
+
+});
