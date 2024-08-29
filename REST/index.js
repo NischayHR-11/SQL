@@ -201,4 +201,46 @@ app.post("/user",(req,res)=>{
     console.log("ERROR is : "+err);
         
     }
+});
+
+app.delete("/user/:id",(req,res)=>{
+
+    let {id}=req.params;
+
+    let q=`select * from users where id='${id}'`;
+
+    try{
+
+        connection.query(q,(err,id)=>{
+
+            if(err) throw err;
+            
+            let userid=id[0];
+            
+            let qd=`delete from users where id='${userid.id}'`;
+
+              
+            try{
+
+                connection.query(qd,(err,result)=>{
+
+                    if(err) throw err;
+                    
+                    user=user.filter((p)=>userid.id!=p.id);
+                    res.redirect("/users");
+                });
+                
+            }catch(err){
+
+                console.log("Error occured !! : "+err);
+            }
+
+
+        })
+
+    }catch( err){
+
+    console.log("ERROR is : "+err);
+        
+    }
 })
