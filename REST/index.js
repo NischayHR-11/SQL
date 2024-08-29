@@ -33,7 +33,7 @@ app.use(method('_method'));
 
   let user=[];
 
-    for(let i=1;i<=100;i++){
+    for(let i=1;i<=5;i++){
 
         user.push(createRandomUser());
     }
@@ -173,3 +173,32 @@ app.patch("/user/:id",(req,res)=>{
     }
 
 });
+
+app.get("/user/new",(req,res)=>{
+
+    res.render("new.ejs");
+})
+
+app.post("/user",(req,res)=>{
+
+    let {name,email,password}=req.body;
+    let userid=faker.string.uuid();
+    let qa=`insert into users (id,name,email,password) values ('${userid}','${name}','${email}','${password}')`
+
+
+    try{
+
+        connection.query(qa,(err,result)=>{
+
+            if(err) throw err;
+            
+            user.push({userid,name,email,password})
+            res.redirect("/users");
+        })
+
+    }catch( err){
+
+    console.log("ERROR is : "+err);
+        
+    }
+})
