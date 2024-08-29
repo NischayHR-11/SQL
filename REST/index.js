@@ -37,6 +37,7 @@ const connection = mysql.createConnection({
   let usercout=0;
   let q="INSERT INTO users (id, name, email, password) VALUES ?";
   let count ="select count(*) from users";
+  let users="select * from users";
 
   
 try{
@@ -77,5 +78,22 @@ app.listen(port,(req,res)=>{
 app.get("/",(req,res)=>{
 
   res.render("home.ejs",{usercount})
+});
+
+app.get("/users",(req,res)=>{
+
+    try{
+
+        connection.query(users,(err,usersdata)=>{
+    
+            if(err) throw err;
+        
+            res.render("users.ejs",{usersdata});
+        });
+        
+    }catch(err){
+    
+        console.log("Error occured !! : "+err);
+    }
 });
 
