@@ -1,6 +1,6 @@
-# SQL Repository
+# SQL
 
-![SQL Concepts](https://github.com/NischayHR-11/SQL/raw/main/images/sql_concepts.png)
+<img src="Concepts/image.jpg" alt="Project 1 Logo" width="400" height="400">
 
 Welcome to the SQL repository! This repository contains a collection of SQL scripts, queries, and related resources designed to help you understand and work with SQL databases effectively.This Repo Also Contains The Concepts Related To Handling a Data base (My SQL) Through SQL Language.
 
